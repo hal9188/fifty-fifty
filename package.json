@@ -2,6 +2,9 @@
   "name": "fifty-fifty",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": "^22"
+  },
   "scripts": {
     "build": "react-router build",
     "dev": "react-router dev",
