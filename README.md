@@ -1,87 +1,59 @@
-# Welcome to React Router!
+# Fifty-Fifty
 
-A modern, production-ready template for building full-stack React applications using React Router.
+## 📦 開発環境構成
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+### 🛠 使用技術スタック
 
-## Features
+- **フレームワーク**: React-router v7(Remix)
+- **UIライブラリ**: React
+- **言語**: TypeScript
+- **ビルドツール**: Vite
+- **テストツール**: Vitest
+- **コンポーネントライブラリ**: shadcn/ui
+- **スタイリング**: Tailwind CSS
+- **リンター / フォーマッター**: Biome
+- **パッケージマネージャー**: pnpm
+- **インフラ / 実行環境**: Google Cloud Run
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+### 📁 ディレクトリ構成
 
-## Getting Started
-
-### Installation
-
-Install the dependencies:
-
-```bash
-npm install
+```
+fifty-fifty
+├── app # ページ、レイアウト、ルート定義など「画面構成」に関するコード
+├── public # ビルド時に成果物にそのままコピーされる静的ファイル置き場
+└── src # アプリケーション全体の機能ロジックやUIパーツなど「汎用機能・実装ロジック」に関するコード
+    ├── components # アプリケーション全体で使用される共有コンポーネント
+    ├── features # # 機能ベースのモジュール
+    ├── lib # アプリケーション用に事前に設定された異なるライブラリを再エクスポートする
+    └── types # アプリケーション全体で使用される基本型
 ```
 
-### Development
+## 開発方法
 
-Start the development server with HMR:
+### インストール
 
 ```bash
-npm run dev
+pnpm install
 ```
 
-Your application will be available at `http://localhost:5173`.
-
-## Building for Production
-
-Create a production build:
+### 開発サーバー起動
 
 ```bash
-npm run build
+pnpm run dev
+# Application will be available at `http://localhost:5173`.
 ```
 
-## Deployment
-
-### Docker Deployment
-
-To build and run using Docker:
+### 本番ビルド
 
 ```bash
-docker build -t my-app .
+pnpm run build
+```
+
+### デプロイ
+
+```bash
+docker build -t fifty-fifty .
 
 # Run the container
-docker run -p 3000:3000 my-app
+docker run -p 3000:3000 fifty-fifty
 ```
-
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
-```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
-
----
-
-Built with ❤️ using React Router.
