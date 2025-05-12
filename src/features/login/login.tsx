@@ -1,15 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { EyeIcon, EyeOffIcon } from 'lucide-react'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import * as z from 'zod'
+import { z } from 'zod'
 import { Button } from '../../components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from '../../components/ui/card'
 import {
   Form,
   FormControl,
@@ -41,92 +35,55 @@ export function Login() {
   function onSubmit(values: FormValues) {
     console.log(values)
   }
+  const ShowPasswordIcon = showPassword ? EyeOffIcon : EyeIcon
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <CardHeader className="px-6 pt-6 pb-0">
-              <FormLabel className="text-xl font-medium">
-                メールアドレス
-              </FormLabel>
-            </CardHeader>
-            <CardContent className="px-6 pt-4">
-              <div className="space-y-6">
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          placeholder="hogehoge@gmail.com"
-                          className="h-12 text-base"
-                          type="email"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div>
-                  <FormLabel className="text-xl font-medium block mb-4">
-                    パスワード
-                  </FormLabel>
-                  <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <div className="relative">
-                          <FormControl>
-                            <Input
-                              type={showPassword ? 'text' : 'password'}
-                              placeholder="***********"
-                              className="h-12 text-base pr-10"
-                              {...field}
-                            />
-                          </FormControl>
-                          <button
-                            type="button"
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2"
-                            onClick={() => setShowPassword(!showPassword)}
-                          >
-                            {showPassword ? (
-                              <EyeOffIcon className="h-5 w-5 text-gray-500" />
-                            ) : (
-                              <EyeIcon className="h-5 w-5 text-gray-500" />
-                            )}
-                          </button>
-                        </div>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>メールアドレス</FormLabel>
+              <FormControl>
+                <Input type="email" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>パスワード</FormLabel>
+              <div className="relative">
+                <FormControl>
+                  <Input
+                    type={showPassword ? 'text' : 'password'}
+                    className="pr-12"
+                    {...field}
                   />
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter className="flex flex-col px-6 pb-6">
-              <Button
-                type="submit"
-                className="w-full h-12 text-base bg-green-500 hover:bg-green-600"
-              >
-                ログイン
-              </Button>
-              <div className="mt-4 text-center w-full">
-                <a
-                  href="/signup"
-                  className="text-base text-gray-700 hover:underline"
+                </FormControl>
+                <button
+                  type="button"
+                  className="absolute h-full w-11 right-0 top-0 transform flex justify-center content-center flex-wrap"
+                  onClick={() => setShowPassword((state) => !state)}
                 >
-                  アカウントを作成
-                </a>
+                  <ShowPasswordIcon className="h-5 w-5 text-gray-500" />
+                </button>
               </div>
-            </CardFooter>
-          </form>
-        </Form>
-      </Card>
-    </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type="submit">ログイン</Button>
+        <Button variant="ghost" asChild>
+          <a href="/signup">アカウントを作成</a>
+        </Button>
+      </form>
+    </Form>
   )
 }
