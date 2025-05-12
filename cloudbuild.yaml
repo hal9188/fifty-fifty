@@ -7,6 +7,13 @@ steps:
         '-t', 'gcr.io/$PROJECT_ID/fifty-fifty-app:pr-$BUILD_ID',
         '.'
       ]
+  # Push image to Artifact Registry / GCR
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'push',
+        'gcr.io/$PROJECT_ID/fifty-fifty-app:pr-$BUILD_ID'
+      ]
   # Deploy to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
