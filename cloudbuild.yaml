@@ -18,8 +18,7 @@ steps:
         '--image', 'gcr.io/$PROJECT_ID/fifty-fifty-app:pr-$BUILD_ID',
         '--region', 'asia-northeast1',
         '--platform', 'managed',
-        '--allow-unauthenticated',
-        '--impersonate-service-account=cloud-build-ops@natural-nimbus-459014-a3.iam.gserviceaccount.com'
+        '--allow-unauthenticated'
       ]
 
 options:
