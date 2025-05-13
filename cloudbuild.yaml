@@ -33,6 +33,8 @@ steps:
           --region=asia-northeast1 \
           --format='value(status.url)')
 
+        echo "✅ Cloud Run URL: $$DEPLOY_URL"
+
         curl -X POST \
           -H "Authorization: token $$GITHUB_TOKEN" \
           -H "Content-Type: application/json" \
