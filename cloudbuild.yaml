@@ -27,6 +27,29 @@ steps:
         '--platform', 'managed',
         '--allow-unauthenticated'
       ]
+  # Comment the deployed URL on the GitHub Pull Request
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: bash
+    args:
+      - '-c'
+      - |
+        DEPLOY_URL=$(gcloud run services describe fifty-fifty-pr-$BUILD_ID \
+          --region=asia-northeast1 \
+          --format="value(status.url)")
+
+        echo "✅ Cloud Run URL: $DEPLOY_URL"
+
+        curl -X POST \
+          -H "Authorization: token $$GITHUB_TOKEN" \
+          -H "Content-Type: application/json" \
+          -d "{\"body\": \"🚀 PR Preview deployed to: $DEPLOY_URL\"}" \
+          "https://api.github.com/repos/$REPO_FULL_NAME/issues/$_PR_NUMBER/comments"
+    secretEnv: ['GITHUB_TOKEN']
+
+availableSecrets:
+  secretManager:
+    - versionName: projects/$PROJECT_ID/secrets/gh-token/versions/latest
+      env: 'GITHUB_TOKEN'
 
 options:
   logging: CLOUD_LOGGING_ONLY
