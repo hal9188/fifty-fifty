@@ -33,7 +33,11 @@ steps:
           --region=asia-northeast1 \
           --format='value(status.url)')
 
-        echo "✅ Cloud Run URL: $DEPLOY_URL"
+        curl -X POST \
+          -H "Authorization: token $$GITHUB_TOKEN" \
+          -H "Content-Type: application/json" \
+          -d "{\"body\": \"🚀 PR Preview deployed to: $$DEPLOY_URL\"}" \
+          "https://api.github.com/repos/$REPO_FULL_NAME/issues/$_PR_NUMBER/comments"
     secretEnv: ["GITHUB_TOKEN"]
 
 availableSecrets:
