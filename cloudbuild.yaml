@@ -38,7 +38,7 @@ steps:
         curl -X POST \
           -H "Authorization: token $$GITHUB_TOKEN" \
           -H "Content-Type: application/json" \
-          -d "{\"body\": \"🚀 PR Preview deployed to: $DEPLOY_URL\"}" \
+          -d "{\"body\": \"🚀 PR Preview deployed to: $$DEPLOY_URL\"}" \
           "https://api.github.com/repos/$REPO_FULL_NAME/issues/$_PR_NUMBER/comments"
     secretEnv: ["GITHUB_TOKEN"]
 
