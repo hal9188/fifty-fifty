@@ -32,6 +32,8 @@ steps:
         DEPLOY_URL=$(gcloud run services describe fifty-fifty-pr-$BUILD_ID \
           --region=asia-northeast1 \
           --format='value(status.url)')
+
+        echo "✅ Cloud Run URL: $DEPLOY_URL"
     secretEnv: ["GITHUB_TOKEN"]
 
 availableSecrets:
