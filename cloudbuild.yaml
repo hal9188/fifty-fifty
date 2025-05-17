@@ -35,11 +35,29 @@ steps:
 
         echo "✅ Cloud Run URL: $$DEPLOY_URL"
 
-        curl -X POST \
+        COMMENT_TAG="<!-- preview-url -->"
+        COMMENT_BODY="🚀 PR Preview deployed to: $DEPLOY_URL $COMMENT_TAG"
+        COMMENTS_API="https://api.github.com/repos/$REPO_FULL_NAME/issues/$_PR_NUMBER/comments"
+        RESPONSE=$(curl -s -H "Authorization: token $$GITHUB_TOKEN" \
+          "https://api.github.com/repos/$REPO_FULL_NAME/issues/$_PR_NUMBER/comments")
+        COMMENT_ID=$(echo "$RESPONSE" | grep -B4 '<!-- preview-url -->' | grep '"id":' | head -n1 | sed 's/[^0-9]*\([0-9]*\),*/\1/')
+
+        REQUEST_METHOD="POST"
+        REQUEST_API_ENDPOINT="https://api.github.com/repos/$REPO_FULL_NAME/issues/$_PR_NUMBER/comments"
+
+        if [ -n "$COMMENT_ID" ]; then
+          echo "📝 Updating existing comment ID: $$COMMENT_ID"
+          REQUEST_METHOD="PATCH"
+          REQUEST_API_ENDPOINT="https://api.github.com/repos/$REPO_FULL_NAME/issues/comments/$COMMENT_ID"
+        else
+          echo "💬 Creating new comment"
+        fi
+
+        curl -s -X $REQUEST_METHOD \
           -H "Authorization: token $$GITHUB_TOKEN" \
           -H "Content-Type: application/json" \
-          -d "{\"body\": \"🚀 PR Preview deployed to: $$DEPLOY_URL\"}" \
-          "https://api.github.com/repos/$REPO_FULL_NAME/issues/$_PR_NUMBER/comments"
+          -d "{\"body\": \"$$COMMENT_BODY\"}" \
+          $REQUEST_API_ENDPOINT
     secretEnv: ["GITHUB_TOKEN"]
 
 availableSecrets:
