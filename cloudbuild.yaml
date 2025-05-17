@@ -36,8 +36,7 @@ steps:
         echo "✅ Cloud Run URL: $$DEPLOY_URL"
 
         COMMENT_TAG="<!-- preview-url -->"
-        COMMENT_BODY="🚀 PR Preview deployed to: $DEPLOY_URL $COMMENT_TAG"
-        COMMENTS_API="https://api.github.com/repos/$REPO_FULL_NAME/issues/$_PR_NUMBER/comments"
+        COMMENT_BODY="🚀 PR Preview deployed to: $$DEPLOY_URL $$COMMENT_TAG"
         RESPONSE=$(curl -s -H "Authorization: token $$GITHUB_TOKEN" \
           "https://api.github.com/repos/$REPO_FULL_NAME/issues/$_PR_NUMBER/comments")
         COMMENT_ID=$(echo "$RESPONSE" | grep -B4 '<!-- preview-url -->' | grep '"id":' | head -n1 | sed 's/[^0-9]*\([0-9]*\),*/\1/')
