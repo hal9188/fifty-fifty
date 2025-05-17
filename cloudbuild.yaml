@@ -56,7 +56,7 @@ steps:
           -H "Authorization: token $$GITHUB_TOKEN" \
           -H "Content-Type: application/json" \
           -d "{\"body\": \"$$COMMENT_BODY\"}" \
-          $REQUEST_API_ENDPOINT
+          $$REQUEST_API_ENDPOINT
     secretEnv: ["GITHUB_TOKEN"]
 
 availableSecrets:
