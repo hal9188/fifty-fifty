@@ -7,3 +7,4 @@
 
 # Vitest
 /coverage
+*storybook.log
