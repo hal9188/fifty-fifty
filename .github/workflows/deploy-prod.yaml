@@ -1,20 +1,25 @@
 name: Build and Deploy to Cloud Run
+
 on:
   push:
     branches:
       - main
+      
 env:
   PROJECT_ID: natural-nimbus-459014-a3
   REGION: asia-northeast1
   SERVICE: fifty-fifty
   ENV: prod
   WORKLOAD_IDENTITY_PROVIDER: projects/41289725297/locations/global/workloadIdentityPools/fifty-fifty-prod/providers/github
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     permissions:
       contents: read
       id-token: write
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,6 +28,7 @@ jobs:
         id: auth
         uses: google-github-actions/auth@v2
         with:
+          project_id: ${{ env.PROJECT_ID }}
           service_account: cloud-build-ops@natural-nimbus-459014-a3.iam.gserviceaccount.com
           workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
 
