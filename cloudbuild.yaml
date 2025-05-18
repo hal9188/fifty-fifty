@@ -13,7 +13,7 @@ steps:
       [
         "run",
         "deploy",
-        "fifty-fifty-pr-$BUILD_ID",
+        "fifty-fifty-pr-$_PR_NUMBER",
         "--image",
         "gcr.io/$PROJECT_ID/fifty-fifty-app:pr-$BUILD_ID",
         "--region",
@@ -43,9 +43,6 @@ steps:
         RESPONSE=$(curl -s -H "Authorization: token $$GITHUB_TOKEN" \
           "https://api.github.com/repos/$REPO_FULL_NAME/issues/$_PR_NUMBER/comments")
         COMMENT_ID=$(echo "$$RESPONSE" | jq -r ".[] | select(.body | contains(\"$$COMMENT_TAG\")) | .id" | head -n 1)
-
-        echo "RESPONSE: $$RESPONSE"
-        echo "COMMENT_ID: $$COMMENT_ID"
 
         REQUEST_METHOD="POST"
         REQUEST_API_ENDPOINT="https://api.github.com/repos/$REPO_FULL_NAME/issues/$_PR_NUMBER/comments"
