@@ -32,7 +32,7 @@ steps:
 
         apt-get update && apt-get install -y curl jq
 
-        DEPLOY_URL=$(gcloud run services describe fifty-fifty-pr-$BUILD_ID \
+        DEPLOY_URL=$(gcloud run services describe fifty-fifty-pr-$_PR_NUMBER \
           --region=asia-northeast1 \
           --format='value(status.url)')
 
