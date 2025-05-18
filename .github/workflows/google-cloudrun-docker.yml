@@ -1,41 +1,41 @@
 name: Build and Deploy to Cloud Run
-
 on:
   push:
     branches:
       - main
-
 env:
   PROJECT_ID: natural-nimbus-459014-a3
   REGION: asia-northeast1
   SERVICE: fifty-fifty
   ENV: prod
   WORKLOAD_IDENTITY_PROVIDER: projects/41289725297/locations/global/workloadIdentityPools/fifty-fifty-prod/providers/github
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     permissions:
       contents: read
       id-token: write
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Authenticate to Google Cloud
         id: auth
         uses: google-github-actions/auth@v2
         with:
+          service_account: cloud-build-ops@natural-nimbus-459014-a3.iam.gserviceaccount.com
           workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
+
       - name: Docker Auth
         uses: docker/login-action@v3
         with:
           username: oauth2accesstoken
           password: ${{ steps.auth.outputs.auth_token }}
           registry: ${{ env.REGION }}-docker.pkg.dev
+
       - name: Configure docker to use the gcloud cli
         run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
+
       - name: Build and Push Container
         id: build-image
         uses: docker/build-push-action@v6
@@ -44,6 +44,7 @@ jobs:
           tags: |
             ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ env.ENV }}:${{ github.sha }}
             ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ env.ENV }}:latest
+
       - name: Deploy to Cloud Run
         id: deploy
         uses: google-github-actions/deploy-cloudrun@v2
@@ -51,6 +52,7 @@ jobs:
           service: ${{ env.SERVICE }}
           region: ${{ env.REGION }}
           image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ env.ENV }}:${{ github.sha }}
+
       - name: Show output
         run: |2-
           echo ${{ steps.deploy.outputs.url }}
