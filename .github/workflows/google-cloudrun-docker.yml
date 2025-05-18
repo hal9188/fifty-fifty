@@ -27,7 +27,6 @@ jobs:
         id: auth
         uses: google-github-actions/auth@v2
         with:
-          service_account: cloud-build-ops@natural-nimbus-459014-a3.iam.gserviceaccount.com
           workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
       - name: Docker Auth
         uses: docker/login-action@v3
@@ -35,6 +34,8 @@ jobs:
           username: oauth2accesstoken
           password: ${{ steps.auth.outputs.auth_token }}
           registry: ${{ env.REGION }}-docker.pkg.dev
+      - name: Configure docker to use the gcloud cli
+        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
       - name: Build and Push Container
         id: build-image
         uses: docker/build-push-action@v6
