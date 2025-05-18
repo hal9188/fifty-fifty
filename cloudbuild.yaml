@@ -29,6 +29,9 @@ steps:
       - "-c"
       - |
         set -e
+
+        apt-get update && apt-get install -y curl jq
+
         DEPLOY_URL=$(gcloud run services describe fifty-fifty-pr-$BUILD_ID \
           --region=asia-northeast1 \
           --format='value(status.url)')
