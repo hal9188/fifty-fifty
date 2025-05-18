@@ -56,6 +56,7 @@ jobs:
         name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
+          service_account: cloud-build-ops@natural-nimbus-459014-a3.iam.gserviceaccount.com
           project_id: ${{ env.PROJECT_ID }}
           workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
 
