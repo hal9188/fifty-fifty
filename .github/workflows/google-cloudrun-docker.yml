@@ -69,12 +69,22 @@ jobs:
           password: ${{ steps.auth.outputs.auth_token }}
           registry: ${{ env.REGION }}-docker.pkg.dev
 
-      - name: Build and Push Container
-        run: |-
-          gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
-          DOCKER_TAG="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ github.sha }}"
-          docker build --tag "${DOCKER_TAG}" .
-          docker push "${DOCKER_TAG}"
+      # - name: Build and Push Container
+      #   run: |-
+      #     gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
+      #     DOCKER_TAG="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ github.sha }}"
+      #     docker build --tag "${DOCKER_TAG}" .
+      #     docker push "${DOCKER_TAG}"
+
+      - name: Build, tag and push container
+        id: build-image
+        uses: docker/build-push-action@v6
+        with:
+          context: '.' # アプリケーションのソースコードが配置されているディレクトリ
+          push: true
+          tags: |
+             asia-northeast1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/$IMAGE_NAME:${{ github.sha }}
+             asia-northeast1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/$IMAGE_NAME:latest
       - name: Deploy to Cloud Run
 
         # END - Docker auth and build
