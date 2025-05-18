@@ -83,8 +83,8 @@ jobs:
           context: '.' # アプリケーションのソースコードが配置されているディレクトリ
           push: true
           tags: |
-             asia-northeast1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/$IMAGE_NAME:${{ github.sha }}
-             asia-northeast1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/$IMAGE_NAME:latest
+            ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ github.sha }}
+            ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:latest
       - name: Deploy to Cloud Run
 
         # END - Docker auth and build
