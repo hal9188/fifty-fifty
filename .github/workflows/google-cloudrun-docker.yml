@@ -34,7 +34,7 @@ env:
   PROJECT_ID: natural-nimbus-459014-a3
   REGION: asia-northeast1
   SERVICE: fifty-fifty
-  WORKLOAD_IDENTITY_PROVIDER: https://iam.googleapis.com/projects/41289725297/locations/global/workloadIdentityPools/fifty-fifty-prod/providers/github
+  WORKLOAD_IDENTITY_PROVIDER: projects/41289725297/locations/global/workloadIdentityPools/fifty-fifty-prod/providers/github
 
 jobs:
   deploy:
