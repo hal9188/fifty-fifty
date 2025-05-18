@@ -25,6 +25,7 @@ steps:
           --region="$LOCATION" \
           --platform=managed \
           --quiet || echo "⚠️ Service $$SERVICE_NAME not found or already deleted"
+    secretEnv: ["GITHUB_TOKEN"]
 
 availableSecrets:
   secretManager:
