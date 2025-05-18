@@ -33,7 +33,7 @@ on:
 env:
   PROJECT_ID: natural-nimbus-459014-a3
   REGION: asia-northeast1
-  SERVICE: fifty-fifty
+  SERVICE: fifty-fifty/prod
   WORKLOAD_IDENTITY_PROVIDER: projects/41289725297/locations/global/workloadIdentityPools/fifty-fifty-prod/providers/github
 
 jobs:
