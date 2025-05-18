@@ -1,11 +1,10 @@
 steps:
   # Build Docker image
   - name: "gcr.io/cloud-builders/docker"
-    args:
-      ["build", "-t", "gcr.io/$PROJECT_ID/fifty-fifty-app:pr-$BUILD_ID", "."]
+    args: ["build", "-t", "gcr.io/$PROJECT_ID/$REPO_NAME-app:pr-$BUILD_ID", "."]
   # Push image to Artifact Registry / GCR
   - name: "gcr.io/cloud-builders/docker"
-    args: ["push", "gcr.io/$PROJECT_ID/fifty-fifty-app:pr-$BUILD_ID"]
+    args: ["push", "gcr.io/$PROJECT_ID/$REPO_NAME-app:pr-$BUILD_ID"]
   # Deploy to Cloud Run
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
     entrypoint: gcloud
@@ -13,9 +12,9 @@ steps:
       [
         "run",
         "deploy",
-        "fifty-fifty-pr-$_PR_NUMBER",
+        "$REPO_NAME-pr-$_PR_NUMBER",
         "--image",
-        "gcr.io/$PROJECT_ID/fifty-fifty-app:pr-$BUILD_ID",
+        "gcr.io/$PROJECT_ID/$REPO_NAME-app:pr-$BUILD_ID",
         "--region",
         "asia-northeast1",
         "--platform",
@@ -32,7 +31,7 @@ steps:
 
         apt-get update && apt-get install -y curl jq
 
-        DEPLOY_URL=$(gcloud run services describe fifty-fifty-pr-$_PR_NUMBER \
+        DEPLOY_URL=$(gcloud run services describe $REPO_NAME-pr-$_PR_NUMBER \
           --region=asia-northeast1 \
           --format='value(status.url)')
 
