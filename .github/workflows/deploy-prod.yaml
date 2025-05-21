@@ -58,6 +58,11 @@ jobs:
 
       - name: Terraform Plan
         working-directory: ./terraform/envs/prod
+        env:
+          TF_VAR_project: ${{ secrets.PROJECT_ID }}
+          TF_VAR_region: ${{ secrets.REGION }}
+          TF_VAR_service_name: ${{ secrets.SERVICE }}
+          TF_VAR_image: ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/${{ env.ENV }}:${{ github.sha }}
         run: terraform plan -out=tfplan -input=false
 
       - name: Terraform Apply
