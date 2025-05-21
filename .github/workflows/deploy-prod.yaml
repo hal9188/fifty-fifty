@@ -47,14 +47,18 @@ jobs:
             ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/${{ env.ENV }}:${{ github.sha }}
             ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/${{ env.ENV }}:latest
 
-      - name: Terraform Init
+      - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: '1.12.1'
 
-      - name: Terraform Init Run
+      - name: Terraform Init
         working-directory: ./terraform/envs/prod
         run: terraform init
+
+      - name: Terraform Plan
+        working-directory: ./terraform/envs/prod
+        run: terraform plan -out=tfplan -input=false
 
       - name: Terraform Apply
         working-directory: ./terraform/envs/prod
@@ -63,4 +67,4 @@ jobs:
           TF_VAR_region: ${{ secrets.REGION }}
           TF_VAR_service_name: ${{ secrets.SERVICE }}
           TF_VAR_image: ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/${{ env.ENV }}:${{ github.sha }}
-        run: terraform apply -auto-approve
+        run: terraform apply -input=false -auto-approve tfplan
