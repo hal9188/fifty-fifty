@@ -48,47 +48,23 @@ jobs:
             ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/${{ env.ENV }}:${{ github.sha }}
             ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/${{ env.ENV }}:latest
 
-      - name: Check if Terraform directory changed
-        id: terraform_diff
-        run: |
-          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^terraform/'; then
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Set up Terraform
-        if: steps.terraform_diff.outputs.changed == 'true'
-        uses: hashicorp/setup-terraform@v3
+      - name: Terraform Init
+        uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: '1.5.7'
 
-      - name: Terraform Init
-        if: steps.terraform_diff.outputs.changed == 'true'
+      - name: Terraform Init Run
         working-directory: ./terraform/envs/prod
         run: terraform init
 
       - name: Terraform Apply
-        if: steps.terraform_diff.outputs.changed == 'true'
         working-directory: ./terraform/envs/prod
+        env:
+          TF_VAR_project: ${{ secrets.PROJECT_ID }}
+          TF_VAR_region: ${{ secrets.REGION }}
+          TF_VAR_service_name: ${{ secrets.SERVICE }}
+          TF_VAR_image: ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/${{ env.ENV }}:${{ github.sha }}
         run: terraform apply -auto-approve
-
-      - name: Release to Cloud Deploy
-        run: |
-          gcloud deploy releases create release-${{ github.sha }} \
-            --delivery-pipeline=fifty-fifty-pipeline \
-            --project=${{ secrets.PROJECT_ID }} \
-            --region=${{ secrets.REGION }} \
-            --images=fifty-fifty=${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/${{ env.ENV }}:${{ github.sha }}
-
-      # - name: Terraform Apply
-      #   working-directory: ./terraform/envs/prod
-      #   env:
-      #     TF_VAR_project: ${{ secrets.PROJECT_ID }}
-      #     TF_VAR_region: ${{ secrets.REGION }}
-      #     TF_VAR_service_name: ${{ secrets.SERVICE }}
-      #     TF_VAR_image: ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/${{ env.ENV }}:${{ github.sha }}
-      #   run: terraform apply -auto-approve
 
       # - name: Deploy to Cloud Run
       #   id: deploy
