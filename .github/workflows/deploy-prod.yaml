@@ -7,7 +7,6 @@ on:
 
 env:
   ENV: prod
-  WORKLOAD_IDENTITY_PROVIDER: projects/41289725297/locations/global/workloadIdentityPools/fifty-fifty-prod/providers/github
 
 jobs:
   deploy:
@@ -26,8 +25,8 @@ jobs:
         uses: google-github-actions/auth@v2
         with:
           project_id: ${{ secrets.PROJECT_ID }}
-          service_account: cloud-build-ops@natural-nimbus-459014-a3.iam.gserviceaccount.com
-          workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.SERVICE_ACCOUNT }}
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
 
       - name: Docker Auth
         uses: docker/login-action@v3
@@ -51,7 +50,7 @@ jobs:
       - name: Terraform Init
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: '1.5.7'
+          terraform_version: '1.12.0'
 
       - name: Terraform Init Run
         working-directory: ./terraform/envs/prod
@@ -65,15 +64,3 @@ jobs:
           TF_VAR_service_name: ${{ secrets.SERVICE }}
           TF_VAR_image: ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/${{ env.ENV }}:${{ github.sha }}
         run: terraform apply -auto-approve
-
-      # - name: Deploy to Cloud Run
-      #   id: deploy
-      #   uses: google-github-actions/deploy-cloudrun@v2
-      #   with:
-      #     service: ${{ secrets.SERVICE }}
-      #     region: ${{ secrets.REGION }}
-      #     image: ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/${{ env.ENV }}:${{ github.sha }}
-
-      # - name: Show output
-      #   run: |2-
-      #     echo ${{ steps.deploy.outputs.url }}
