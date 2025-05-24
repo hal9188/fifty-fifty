@@ -23,7 +23,6 @@ variable "deletion_protection" {
   default     = true
 }
 
-variable "allowed_members" {
-  type        = list(string)
-  default     = []
+variable "allowed_member" {
+  type        = string
 }

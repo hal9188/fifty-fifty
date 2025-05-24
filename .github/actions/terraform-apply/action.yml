@@ -17,8 +17,8 @@ inputs:
   image:
     description: "Docker image name"
     required: true
-  allowed_members:
-    description: "Allowed members"
+  allowed_member:
+    description: "Allowed member"
     required: true
 
 runs:
