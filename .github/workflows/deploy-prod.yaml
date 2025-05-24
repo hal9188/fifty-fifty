@@ -31,7 +31,7 @@ jobs:
 
       - uses: ./.github/actions/terraform-apply
         with:
-          working-directory: ./terraform/envs/prod
+          working_directory: ./terraform/envs/prod
           project_id: ${{ secrets.PROJECT_ID }}
           region: ${{ secrets.REGION }}
           service_name: ${{ secrets.SERVICE }}
