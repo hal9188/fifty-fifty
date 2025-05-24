@@ -56,6 +56,10 @@ jobs:
         working-directory: ./terraform/envs/prod
         run: terraform init
 
+      - name: Terraform Import
+        working-directory: ./terraform/envs/prod
+        run: terraform import module.fifty_fifty.google_cloud_run_v2_service.this asia-northeast1/fifty-fifty
+
       - name: Terraform Apply
         working-directory: ./terraform/envs/prod
         env:
