@@ -10,4 +10,5 @@ module "fifty_fifty" {
   location      = var.region
   project       = var.project
   image         = var.image
+  allowed_member = var.allowed_member
 }

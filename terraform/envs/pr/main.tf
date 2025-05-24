@@ -11,4 +11,5 @@ module "fifty_fifty" {
   project       = var.project
   image         = var.image
   deletion_protection = false
+  allowed_member = var.allowed_member
 }
