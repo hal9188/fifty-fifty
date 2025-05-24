@@ -1,6 +1,6 @@
 terraform {
   backend "gcs" {
-    bucket  = "terraform-state-natural-nimbus-prod"
+    bucket  = "terraform-state-natural-nimbus"
     prefix  = "envs/prod"
   }
 }
