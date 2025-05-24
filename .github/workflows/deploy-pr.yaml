@@ -81,10 +81,6 @@ jobs:
         working-directory: ./terraform/envs/pr
         run: terraform init
 
-      - name: Terraform State List (debug)
-        working-directory: ./terraform/envs/pr
-        run: terraform state list || echo "No state"
-
       - name: Terraform Destroy
         working-directory: ./terraform/envs/pr
         env:
