@@ -91,3 +91,7 @@ jobs:
           TF_VAR_image: ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/pr-${{ github.event.pull_request.number }}:${{ github.sha }}
           TF_VAR_allowed_members: ${{ secrets.ALLOWED_MEMBERS }}
         run: terraform destroy -auto-approve
+
+      - name: Delete tfstate from GCS
+        run: |
+          gsutil rm -r gs://terraform-state-natural-nimbus-pr/envs/pr-${{ github.event.pull_request.number }}/
