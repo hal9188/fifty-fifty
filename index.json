@@ -1,0 +1,1 @@
+{"v":5,"entries":{"features-login--default":{"type":"story","id":"features-login--default","name":"Default","title":"Features/Login","importPath":"./src/features/login/login.stories.ts","componentPath":"./src/features/login/login.tsx","tags":["dev","test"]}}}
