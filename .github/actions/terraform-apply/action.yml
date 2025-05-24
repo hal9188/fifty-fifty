@@ -1,0 +1,42 @@
+name: "Deploy to Cloud Run"
+description: "Deploy application to Cloud Run with Terraform"
+
+inputs:
+  working_directory:
+    description: "Terraform working directory"
+    required: true
+  project_id:
+    description: "Project ID"
+    required: true
+  region:
+    description: "Region"
+    required: true
+  service_name:
+    description: "Service name"
+    required: true
+  image:
+    description: "Docker image name"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: "1.12.1"
+
+    - name: Terraform Init
+      shell: bash
+      working-directory: ${{ inputs.working_directory }}
+      run: terraform init
+
+    - name: Terraform Apply
+      shell: bash
+      working-directory: ${{ inputs.working_directory }}
+      env:
+        TF_VAR_project: ${{ inputs.project_id }}
+        TF_VAR_region: ${{ inputs.region }}
+        TF_VAR_service_name: ${{ inputs.service_name }}
+        TF_VAR_image: ${{ inputs.image }}
+      run: terraform apply -auto-approve

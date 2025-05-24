@@ -19,48 +19,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Authenticate to Google Cloud
-        id: auth
-        uses: google-github-actions/auth@v2
+      - uses: ./.github/actions/publish
         with:
           project_id: ${{ secrets.PROJECT_ID }}
           service_account: ${{ secrets.SERVICE_ACCOUNT }}
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
-
-      - name: Docker Auth
-        uses: docker/login-action@v3
-        with:
-          username: oauth2accesstoken
-          password: ${{ steps.auth.outputs.auth_token }}
-          registry: ${{ secrets.REGION }}-docker.pkg.dev
-
-      - name: Configure docker to use the gcloud cli
-        run: gcloud auth configure-docker ${{ secrets.REGION }}-docker.pkg.dev --quiet
-
-      - name: Build and Push Container
-        id: build-image
-        uses: docker/build-push-action@v6
-        with:
-          push: true
-          tags: |
+          region: ${{ secrets.REGION }}
+          image_tags: |
             ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/${{ env.ENV }}:${{ github.sha }}
             ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/${{ env.ENV }}:latest
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+      - uses: ./.github/actions/terraform-apply
         with:
-          terraform_version: '1.12.1'
-
-      - name: Terraform Init
-        working-directory: ./terraform/envs/prod
-        run: terraform init
-
-      - name: Terraform Apply
-        working-directory: ./terraform/envs/prod
-        env:
-          TF_VAR_project: ${{ secrets.PROJECT_ID }}
-          TF_VAR_region: ${{ secrets.REGION }}
-          TF_VAR_service_name: ${{ secrets.SERVICE }}
-          TF_VAR_image: ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/${{ env.ENV }}:${{ github.sha }}
-        run: terraform apply -auto-approve
+          working-directory: ./terraform/envs/prod
+          project_id: ${{ secrets.PROJECT_ID }}
+          region: ${{ secrets.REGION }}
+          service_name: ${{ secrets.SERVICE }}
+          image: ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/${{ env.ENV }}:${{ github.sha }}
