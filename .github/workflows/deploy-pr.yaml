@@ -55,13 +55,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ secrets.PROJECT_ID }}
-          service_account: ${{ secrets.SERVICE_ACCOUNT }}
-          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
-
       - name: Create PR Terraform Files
         working-directory: ./terraform/envs
         run: |
@@ -91,6 +84,16 @@ jobs:
 
           TF_VAR_allowed_members: ${{ secrets.ALLOWED_MEMBERS }}
         run: terraform destroy -auto-approve
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ secrets.PROJECT_ID }}
+          service_account: ${{ secrets.SERVICE_ACCOUNT }}
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
 
       - name: Delete tfstate from GCS
         run: |
