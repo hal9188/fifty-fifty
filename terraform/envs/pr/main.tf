@@ -10,4 +10,5 @@ module "fifty_fifty" {
   location      = var.region
   project       = var.project
   image         = var.image
+  deletion_protection = false
 }
