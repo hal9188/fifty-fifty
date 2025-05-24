@@ -30,7 +30,7 @@ jobs:
         run: |
           echo 'terraform {
             backend "gcs" {
-              bucket = "terraform-state-natural-nimbus"
+              bucket = "terraform-state-natural-nimbus-pr"
               prefix = "envs/pr-${{ github.event.pull_request.number }}"
             }
           }' > pr/backend.tf
@@ -60,7 +60,7 @@ jobs:
         run: |
           echo 'terraform {
             backend "gcs" {
-              bucket = "terraform-state-natural-nimbus"
+              bucket = "terraform-state-natural-nimbus-pr"
               prefix = "envs/pr-${{ github.event.pull_request.number }}"
             }
           }' > pr/backend.tf
