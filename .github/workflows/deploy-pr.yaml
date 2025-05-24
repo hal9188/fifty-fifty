@@ -11,8 +11,8 @@ permissions:
 
 jobs:
   preview:
-    runs-on: ubuntu-latest
     if: github.event.pull_request.state != 'closed'
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -35,23 +35,13 @@ jobs:
             }
           }' > pr/backend.tf
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+      - uses: ./.github/actions/terraform-apply
         with:
-          terraform_version: '1.12.1'
-
-      - name: Terraform Init
-        working-directory: ./terraform/envs/pr
-        run: terraform init
-
-      - name: Terraform Apply
-        working-directory: ./terraform/envs/pr
-        env:
-          TF_VAR_project: ${{ secrets.PROJECT_ID }}
-          TF_VAR_region: ${{ secrets.REGION }}
-          TF_VAR_service_name: ${{ secrets.SERVICE }}-pr-${{ github.event.pull_request.number }}
-          TF_VAR_image: ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/pr-${{ github.event.pull_request.number }}:${{ github.sha }}
-        run: terraform apply -auto-approve
+          working-directory: ./terraform/envs/pr
+          project_id: ${{ secrets.PROJECT_ID }}
+          region: ${{ secrets.REGION }}
+          service_name: ${{ secrets.SERVICE }}-pr-${{ github.event.pull_request.number }}
+          image: ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/pr-${{ github.event.pull_request.number }}:${{ github.sha }}
 
       - name: Comment Preview URL on PR
         uses: marocchino/sticky-pull-request-comment@v2
