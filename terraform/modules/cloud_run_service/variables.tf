@@ -22,3 +22,8 @@ variable "deletion_protection" {
   type        = bool
   default     = true
 }
+
+variable "allowed_members" {
+  type        = list(string)
+  default     = []
+}

@@ -36,3 +36,4 @@ jobs:
           region: ${{ secrets.REGION }}
           service_name: ${{ secrets.SERVICE }}
           image: ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/${{ env.ENV }}:${{ github.sha }}
+          allowed_members: '["allUsers"]'
