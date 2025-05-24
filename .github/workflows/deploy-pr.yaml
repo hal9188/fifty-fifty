@@ -42,7 +42,7 @@ jobs:
           region: ${{ secrets.REGION }}
           service_name: ${{ secrets.SERVICE }}-pr-${{ github.event.pull_request.number }}
           image: ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/pr-${{ github.event.pull_request.number }}:${{ github.sha }}
-          allowed_member: ${{ secrets.ALLOWED_MEMBER }}
+          allowed_member: user:hogefuga129703823041@gmail.com
 
       - name: Comment Preview URL on PR
         uses: marocchino/sticky-pull-request-comment@v2
@@ -89,7 +89,7 @@ jobs:
           TF_VAR_region: ${{ secrets.REGION }}
           TF_VAR_service_name: ${{ secrets.SERVICE }}-pr-${{ github.event.pull_request.number }}
           TF_VAR_image: ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/pr-${{ github.event.pull_request.number }}:${{ github.sha }}
-          TF_VAR_allowed_member: ${{ secrets.ALLOWED_MEMBER }}
+          TF_VAR_allowed_member: user:hogefuga129703823041@gmail.com
         run: terraform destroy -auto-approve
 
       - name: Delete tfstate from GCS
