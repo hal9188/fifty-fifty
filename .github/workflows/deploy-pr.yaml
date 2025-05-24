@@ -20,6 +20,7 @@ jobs:
       service_name: ${{ secrets.SERVICE }}-pr-${{ github.event.pull_request.number }}
       image: ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/pr-${{ github.event.pull_request.number }}:${{ github.sha }}
       image_tags: ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/pr-${{ github.event.pull_request.number }}:${{ github.sha }}
+    secrets: inherit
 
   destroy:
     if: github.event.action == 'closed'
