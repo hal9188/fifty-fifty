@@ -50,7 +50,7 @@ jobs:
               bucket = "terraform-state-natural-nimbus"
               prefix = "envs/pr-${{ github.event.pull_request.number }}"
             }
-          }' > terraform/envs/pr/backend.tf
+          }' > pr/backend.tf
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
