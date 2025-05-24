@@ -81,6 +81,16 @@ jobs:
         working-directory: ./terraform/envs/pr
         run: terraform init
 
+      - name: Terraform State List (debug)
+        working-directory: ./terraform/envs/pr
+        run: terraform state list || echo "No state"
+
+      - name: Echo PR number (from pull_request object)
+        run: echo "github.event.pull_request.number = ${{ github.event.pull_request.number }}"
+
+      - name: Echo generic event number
+        run: echo "github.event.number = ${{ github.event.number }}"
+
       - name: Terraform Destroy
         env:
           TF_VAR_project: ${{ secrets.PROJECT_ID }}
