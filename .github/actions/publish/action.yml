@@ -45,3 +45,5 @@ runs:
       with:
         push: true
         tags: ${{ inputs.image_tags }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
