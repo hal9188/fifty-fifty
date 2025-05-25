@@ -99,7 +99,8 @@ jobs:
           working_directory: ./terraform/envs/pr
           project_id: ${{ secrets.PROJECT_ID }}
           region: ${{ secrets.REGION }}
-          service_name: ${{ secrets.SERVICE }}-pr-${{ github.event.pull_request.number }}
+          service_name: ${{ secrets.SERVICE }}
+          pr_number: ${{ github.event.pull_request.number }}
           image: ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}-pr/pr-${{ github.event.pull_request.number }}:${{ github.sha }}
 
       - name: Comment Preview URL on PR
