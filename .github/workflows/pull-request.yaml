@@ -73,16 +73,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Publish Docker Image
-        uses: ./.github/actions/publish
-        with:
-          project_id: ${{ secrets.PROJECT_ID }}
-          service_account: ${{ secrets.SERVICE_ACCOUNT }}
-          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
-          region: ${{ secrets.REGION }}
-          image_tags: |
-            ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}-pr/pr-${{ github.event.pull_request.number }}:${{ github.sha }}
-
       - name: Create PR Terraform Files
         working-directory: ./terraform/envs
         run: |
@@ -92,6 +82,36 @@ jobs:
               prefix = "envs/pr-${{ github.event.pull_request.number }}"
             }
           }' > pr/backend.tf
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.12.1"
+
+      - name: Terraform Init
+        shell: bash
+        working-directory: ./terraform/envs/pr
+        run: terraform init
+
+      - name: Terraform Destroy
+        working-directory: ./terraform/envs/pr
+        env:
+          TF_VAR_project: ${{ secrets.PROJECT_ID }}
+          TF_VAR_region: ${{ secrets.REGION }}
+          TF_VAR_service_name: ${{ secrets.SERVICE }}
+          TF_VAR_pr_number: ${{ github.event.pull_request.number }}
+          TF_VAR_image: ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}-pr/pr-${{ github.event.pull_request.number }}:${{ github.sha }}
+        run: terraform import
+
+      - name: Publish Docker Image
+        uses: ./.github/actions/publish
+        with:
+          project_id: ${{ secrets.PROJECT_ID }}
+          service_account: ${{ secrets.SERVICE_ACCOUNT }}
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+          region: ${{ secrets.REGION }}
+          image_tags: |
+            ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}-pr/pr-${{ github.event.pull_request.number }}:${{ github.sha }}
 
       - name: Terraform Apply
         uses: ./.github/actions/terraform-apply
