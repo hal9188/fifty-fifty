@@ -11,3 +11,12 @@ module "fifty_fifty" {
   project       = var.project
   image         = var.image
 }
+
+module "artifact_registry" {
+  source        = "../../modules/artifact_registry"
+  region        = var.region
+  project       = var.project
+  repository_id = "${var.service_name}-prod"
+  description   = "Docker repository for production environment"
+  keep_count    = 30
+}

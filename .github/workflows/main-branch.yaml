@@ -47,8 +47,8 @@ jobs:
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
           region: ${{ secrets.REGION }}
           image_tags: |
-            ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/${{ env.ENV }}:${{ github.sha }}
-            ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/${{ env.ENV }}:latest
+            ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}-prod/${{ env.ENV }}:${{ github.sha }}
+            ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}-prod/${{ env.ENV }}:latest
 
       - name: Terraform Apply
         uses: ./.github/actions/terraform-apply
@@ -57,4 +57,4 @@ jobs:
           project_id: ${{ secrets.PROJECT_ID }}
           region: ${{ secrets.REGION }}
           service_name: ${{ secrets.SERVICE }}
-          image: ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/${{ env.ENV }}:${{ github.sha }}
+          image: ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}-prod/${{ env.ENV }}:${{ github.sha }}

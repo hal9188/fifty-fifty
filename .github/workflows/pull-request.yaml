@@ -81,7 +81,7 @@ jobs:
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
           region: ${{ secrets.REGION }}
           image_tags: |
-            ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/pr-${{ github.event.pull_request.number }}:${{ github.sha }}
+            ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}-pr/pr-${{ github.event.pull_request.number }}:${{ github.sha }}
 
       - name: Create PR Terraform Files
         working-directory: ./terraform/envs
@@ -100,7 +100,7 @@ jobs:
           project_id: ${{ secrets.PROJECT_ID }}
           region: ${{ secrets.REGION }}
           service_name: ${{ secrets.SERVICE }}-pr-${{ github.event.pull_request.number }}
-          image: ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/pr-${{ github.event.pull_request.number }}:${{ github.sha }}
+          image: ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}-pr/pr-${{ github.event.pull_request.number }}:${{ github.sha }}
 
       - name: Comment Preview URL on PR
         uses: marocchino/sticky-pull-request-comment@v2

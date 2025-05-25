@@ -16,4 +16,10 @@ variable "description" {
 
 variable "retention_days" {
   type        = string
+  default     = null
+}
+
+variable "keep_count" {
+  type        = number
+  default     = null
 }
