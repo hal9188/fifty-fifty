@@ -11,6 +11,8 @@
     "start": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc",
     "test": "vitest run",
+    "test:unit": "vitest run --project unit",
+    "test:storybook": "vitest run --project storybook",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "lint": "biome check --write",
