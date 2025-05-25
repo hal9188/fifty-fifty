@@ -1,0 +1,40 @@
+---
+description: 
+globs: .ts,.tsx,.css,.scss
+alwaysApply: false
+---
+# コーディング規約
+
+## 全般
+
+- TypeScriptの厳格なモードを使用
+- Biomeを使用してコードスタイルを統一
+- 関数コンポーネントとReact Hooksを使用
+
+## ファイル構成
+
+- 各機能は `src/features` ディレクトリに配置
+- 共通コンポーネントは `src/components` ディレクトリに配置
+- ページコンポーネントは `app/routes` ディレクトリに配置
+
+## コンポーネント
+
+- コンポーネントは関数コンポーネントとして実装
+- Propsには適切な型定義を付与
+- UIコンポーネントはshadcn/uiの規約に従う
+
+## スタイリング
+
+- スタイリングはTailwind CSSを使用
+- カスタムスタイルは `app.css` に定義
+
+## テスト
+
+- ユニットテストはVitestを使用
+- コンポーネントテストはStorybookとVitestを組み合わせて実施
+
+## ルーティング
+
+- ルーティングはReact Router v7の規約に従う
+- ルート定義は `app/routes.ts` に集約
+

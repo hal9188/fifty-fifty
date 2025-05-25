@@ -1,0 +1,78 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# 開発ワークフロー
+
+## 開発環境のセットアップ
+
+1. 依存関係のインストール:
+```bash
+pnpm install
+```
+
+2. 開発サーバーの起動:
+```bash
+pnpm run dev
+```
+アプリケーションは http://localhost:5173 で利用可能になります。
+
+## スクリプト
+
+- `pnpm run dev`: 開発サーバーを起動
+- `pnpm run build`: 本番用ビルドを作成
+- `pnpm run start`: ビルドされたアプリケーションを実行
+- `pnpm run typecheck`: 型チェックを実行
+- `pnpm run test`: すべてのテストを実行
+- `pnpm run test:unit`: ユニットテストのみ実行
+- `pnpm run test:storybook`: Storybookテストを実行
+- `pnpm run lint`: Biomeを使用してコードをリントおよびフォーマット
+- `pnpm run storybook`: Storybookを起動
+
+## デプロイ
+
+デプロイはDockerを使用して行われます:
+
+```bash
+docker build -t fifty-fifty .
+docker run -p 3000:3000 fifty-fifty
+```
+
+本番環境ではGoogle Cloud Runが使用されています。デプロイは[.github/workflows](mdc:.github/workflows)で定義されたCI/CDパイプラインによって自動化されています。
+
+## インフラストラクチャ管理
+
+インフラストラクチャはTerraformを使用してコードとして管理されています。
+
+### Terraformの使用
+
+1. Terraformのインストール（必要な場合）:
+```bash
+brew install terraform # macOS
+# または
+apt-get install terraform # Ubuntu
+```
+
+2. 環境の初期化:
+```bash
+cd terraform/envs/[環境名]
+terraform init
+```
+
+3. 実行計画の確認:
+```bash
+terraform plan
+```
+
+4. インフラストラクチャの適用:
+```bash
+terraform apply
+```
+
+### 環境
+
+- **PR環境**: プルリクエスト用の一時的な環境 (`terraform/envs/pr`)
+- **本番環境**: 本番サービス用の環境 (`terraform/envs/prod`)
+
+CI/CDパイプラインでは、[.github/actions/terraform-apply](mdc:.github/actions/terraform-apply)アクションを使用してTerraformの適用が自動化されています。
