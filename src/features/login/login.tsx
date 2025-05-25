@@ -59,7 +59,7 @@ export function Login() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>パスワード</FormLabel>
-              <div className="relative">
+              <div className="absolute">
                 <FormControl>
                   <Input
                     type={showPassword ? 'text' : 'password'}
