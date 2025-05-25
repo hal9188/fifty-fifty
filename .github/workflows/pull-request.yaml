@@ -1,0 +1,109 @@
+name: Pull Request Workflow
+
+on:
+  pull_request:
+
+jobs:
+  # 品質チェックジョブ
+  unit-test:
+    name: Run Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js and pnpm
+        uses: ./.github/actions/setup-node-pnpm
+
+      - name: Run unit tests
+        run: pnpm test:unit
+
+  storybook-test:
+    name: Run Storybook Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js and pnpm
+        uses: ./.github/actions/setup-node-pnpm
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install
+
+      - name: Run Storybook tests
+        run: pnpm test:storybook
+
+  lint:
+    name: Lint Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js and pnpm
+        uses: ./.github/actions/setup-node-pnpm
+
+      - name: Lint check
+        run: pnpm lint
+
+  typecheck:
+    name: Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js and pnpm
+        uses: ./.github/actions/setup-node-pnpm
+
+      - name: Type check
+        run: pnpm typecheck
+
+  # プレビューデプロイジョブ
+  preview-deploy:
+    name: Deploy Preview Environment
+    needs: [typecheck]
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Publish Docker Image
+        uses: ./.github/actions/publish
+        with:
+          project_id: ${{ secrets.PROJECT_ID }}
+          service_account: ${{ secrets.SERVICE_ACCOUNT }}
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+          region: ${{ secrets.REGION }}
+          image_tags: |
+            ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/pr-${{ github.event.pull_request.number }}:${{ github.sha }}
+
+      - name: Create PR Terraform Files
+        working-directory: ./terraform/envs
+        run: |
+          echo 'terraform {
+            backend "gcs" {
+              bucket = "terraform-state-natural-nimbus-pr"
+              prefix = "envs/pr-${{ github.event.pull_request.number }}"
+            }
+          }' > pr/backend.tf
+
+      - name: Terraform Apply
+        uses: ./.github/actions/terraform-apply
+        with:
+          working_directory: ./terraform/envs/pr
+          project_id: ${{ secrets.PROJECT_ID }}
+          region: ${{ secrets.REGION }}
+          service_name: ${{ secrets.SERVICE }}-pr-${{ github.event.pull_request.number }}
+          image: ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/pr-${{ github.event.pull_request.number }}:${{ github.sha }}
+
+      - name: Comment Preview URL on PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          message: |
+            🚀 Preview deployed to: https://fifty-fifty-pr-${{ github.event.pull_request.number }}-nrrgojequa-an.a.run.app

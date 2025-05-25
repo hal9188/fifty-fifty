@@ -1,0 +1,59 @@
+name: Main Branch Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  # Storybookの公開ジョブ
+  publish-storybook:
+    name: Publish Storybook to Chromatic
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup Node.js and pnpm
+        uses: ./.github/actions/setup-node-pnpm
+
+      - name: Publish to Chromatic
+        uses: chromaui/action@v12
+        with:
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          onlyChanged: true
+
+  # プロダクション環境デプロイジョブ
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      ENV: prod
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Publish to GCR
+        uses: ./.github/actions/publish
+        with:
+          project_id: ${{ secrets.PROJECT_ID }}
+          service_account: ${{ secrets.SERVICE_ACCOUNT }}
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+          region: ${{ secrets.REGION }}
+          image_tags: |
+            ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/${{ env.ENV }}:${{ github.sha }}
+            ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/${{ env.ENV }}:latest
+
+      - name: Terraform Apply
+        uses: ./.github/actions/terraform-apply
+        with:
+          working_directory: ./terraform/envs/prod
+          project_id: ${{ secrets.PROJECT_ID }}
+          region: ${{ secrets.REGION }}
+          service_name: ${{ secrets.SERVICE }}
+          image: ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}/${{ env.ENV }}:${{ github.sha }}
