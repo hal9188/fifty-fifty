@@ -6,16 +6,16 @@
     "node": "^22"
   },
   "scripts": {
-    "build": "react-router build",
     "dev": "react-router dev",
+    "build": "react-router build",
     "start": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc",
+    "lint": "biome check --write",
     "test": "vitest run",
     "test:unit": "vitest run --project unit",
     "test:storybook": "vitest run --project storybook",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "lint": "biome check --write",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
