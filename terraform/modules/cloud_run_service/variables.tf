@@ -17,8 +17,3 @@ variable "image" {
 variable "location" {
   type = string
 }
-
-variable "deletion_protection" {
-  type        = bool
-  default     = true
-}

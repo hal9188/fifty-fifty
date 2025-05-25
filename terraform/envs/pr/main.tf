@@ -12,12 +12,3 @@ module "fifty_fifty" {
   image         = var.image
   deletion_protection = false
 }
-
-module "artifact_registry" {
-  source        = "../../modules/artifact_registry"
-  region        = var.region
-  project       = var.project
-  repository_id = "${var.service_name}-pr"
-  description   = "Docker repository for PR environments"
-  retention_days = "30d"
-}
