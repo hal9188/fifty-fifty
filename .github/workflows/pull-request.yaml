@@ -105,5 +105,36 @@ jobs:
       - name: Comment Preview URL on PR
         uses: marocchino/sticky-pull-request-comment@v2
         with:
+          header: preview
           message: |
             🚀 Preview deployed to: https://fifty-fifty-pr-${{ github.event.pull_request.number }}-nrrgojequa-an.a.run.app
+
+  # Storybookの公開ジョブ
+  publish-storybook:
+    name: Publish Storybook to Chromatic
+    permissions:
+      contents: read
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js and pnpm
+        uses: ./.github/actions/setup-node-pnpm
+
+      - name: Publish to Chromatic
+        uses: chromaui/action@v12
+        id: chromatic
+        with:
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          onlyChanged: true
+
+      - name: Comment Storybook URL on PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: storybook
+          message: |
+            📖 Storybook published to: ${{ steps.chromatic.outputs.storybookUrl }}
