@@ -14,9 +14,11 @@ jobs:
     if: github.event.pull_request.state != 'closed'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: ./.github/actions/publish
+      - name: Publish to GCR
+        uses: ./.github/actions/publish-to-gcr
         with:
           project_id: ${{ secrets.PROJECT_ID }}
           service_account: ${{ secrets.SERVICE_ACCOUNT }}
@@ -35,7 +37,8 @@ jobs:
             }
           }' > pr/backend.tf
 
-      - uses: ./.github/actions/terraform-apply
+      - name: Terraform Apply
+        uses: ./.github/actions/terraform-apply
         with:
           working_directory: ./terraform/envs/pr
           project_id: ${{ secrets.PROJECT_ID }}
@@ -53,7 +56,8 @@ jobs:
     if: github.event.pull_request.state == 'closed'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
@@ -61,6 +65,7 @@ jobs:
           project_id: ${{ secrets.PROJECT_ID }}
           service_account: ${{ secrets.SERVICE_ACCOUNT }}
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+
       - name: Create PR Terraform Files
         working-directory: ./terraform/envs
         run: |
