@@ -30,3 +30,4 @@ jobs:
         uses: chromaui/action@v12
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          onlyChanged: true
