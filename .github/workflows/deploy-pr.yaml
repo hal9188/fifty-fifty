@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Publish to GCR
-        uses: ./.github/actions/publish-to-gcr
+        uses: ./.github/actions/publish
         with:
           project_id: ${{ secrets.PROJECT_ID }}
           service_account: ${{ secrets.SERVICE_ACCOUNT }}
