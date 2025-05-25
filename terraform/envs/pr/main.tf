@@ -5,7 +5,7 @@ provider "google" {
 
 module "fifty_fifty" {
   source        = "../../modules/cloud_run_service"
-  service_name  = var.service_name
+  service_name  = "${var.service_name}-pr-${var.pr_number}"
   region        = var.region
   location      = var.region
   project       = var.project
