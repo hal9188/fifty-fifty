@@ -5,6 +5,10 @@ resource "google_artifact_registry_repository" "this" {
   description   = var.description
   format        = "DOCKER"
 
+  lifecycle {
+    prevent_destroy = true
+  }
+
   dynamic "cleanup_policies" {
     for_each = var.keep_count != null ? [1] : []
     content {
