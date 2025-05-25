@@ -1,5 +1,7 @@
 # Fifty-Fifty
 
+- [Storybook](https://main--6831d0afff22901b3efe12e2.chromatic.com/)
+
 ## 📦 開発環境構成
 
 ### 🛠 使用技術スタック
