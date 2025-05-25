@@ -4,8 +4,8 @@ on:
   pull_request:
 
 jobs:
-  test:
-    name: Run Tests
+  unit-test:
+    name: Run Unit Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -14,5 +14,21 @@ jobs:
       - name: Setup Node.js and pnpm
         uses: ./.github/actions/setup-node-pnpm
 
-      - name: Run tests
-        run: pnpm test
+      - name: Run unit tests
+        run: pnpm test:unit
+
+  storybook-test:
+    name: Run Storybook Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js and pnpm
+        uses: ./.github/actions/setup-node-pnpm
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install
+
+      - name: Run Storybook tests
+        run: pnpm test:storybook
